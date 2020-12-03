@@ -5,7 +5,7 @@ import './App.css'
 import Home from './components/pages/Home';
 import Login from './components/pages/Login'
 import MyLocation from './components/pages/MyLocation';
-import Screening from './components/pages/Screening';
+import ScreeningForm from './components/pages/ScreeningForm';
 class App extends Component {
   render() {
       return (
@@ -14,7 +14,7 @@ class App extends Component {
                   <Switch>
                       <Route exact path='/' component={Login} />
                       <Route path='/home' component={Home} />
-                      <Route path='/screening' component={Screening} />
+                      <Route path='/screening' component={ScreeningForm} />
                       <Route path='/MyLocation' component={MyLocation} />
 
                   </Switch>
