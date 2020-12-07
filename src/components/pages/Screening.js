@@ -1,117 +1,127 @@
-import React, { Component } from 'react';
-import Dropdown from 'react-dropdown'
-import 'react-dropdown/style.css'
-import '../pages/css/popup.css'
-import { connect } from 'react-redux'
-import * as actions from "../../action/screeningAction"
-import { bindActionCreators } from "redux";
+import React from "react";
+import { Field, reduxForm } from "redux-form";
+import TextField from "@material-ui/core/TextField";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import Checkbox from "@material-ui/core/Checkbox";
+import SelectField from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 
-class Screening extends Component {
+const renderTextField = ({
+  input,
+  label,
+  meta: { touched, error },
+  ...custom
+}) => (
+  <TextField
+    hintText={label}
+    floatingLabelText={label}
+    errorText={touched && error}
+    {...input}
+    {...custom}
+  />
+);
 
-    state = {
-        ...this.returnStateObject()
-    }
+const renderRadioGroup = ({ input, ...rest }) => (
+  <Radio
+    {...input}
+    {...rest}
+    valueSelected={input.value}
+    onChange={(event, value) => input.onChange(value)}
+  />
+);
 
-    returnStateObject() {
-     
-            return {
-                currentTemp: '',
-                wakingTemp: '',
-                temparatureUnit: '',
-                tempMethod: ''
-            }
-      
-    }
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.insertScreeing(this.state);
-    }
-    handleInputChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-    }
-    options = 
-        {
-             items: [
-              { value: 'Oral', label: 'Oral', className: 'myOptionClassName' },
-              { value: 'Other', label: 'Other' }
-            ]
-        };
+const renderCheckbox = ({ input, label }) => (
+  <Checkbox
+    label={label}
+    checked={input.value ? true : false}
+    onCheck={input.onChange}
+  />
+);
+const renderSelectField = ({
+  input,
+  label,
+  meta: { touched, error },
+  children,
+  ...custom
+}) => (
+  <SelectField
+    floatingLabelText={label}
+    errorText={touched && error}
+    {...input}
+    onChange={(event, index, value) => input.onChange(value)}
+    children={children}
+    {...custom}
+  />
+);
+const ScreeningForm = (props) => {
+  const { handleSubmit } = props;
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <Field
+          name="currentTemp"
+          component={renderTextField}
+          label="Current Temparature"
+        />
+      </div>
+      <div>
+        <Field
+          name="wakingTemp"
+          component={renderTextField}
+          label="Waking Temparature"
+        />
+      </div>
+      <div>
+        <Field name="Temp" component={renderRadioGroup}>
+          <Radio value="F" label="F" />
+          <Radio value="C" label="C" />
+        </Field>
+      </div>
+      <div>
+        <Field
+          name="favoriteColor"
+          component={renderSelectField}
+          label="Favorite Color"
+        >
+          <MenuItem value="Oral" primaryText="Oral" />
+          <MenuItem value="Other" primaryText="Other" />
+        </Field>
+      </div>
+      <div>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">
+            CHECK IF YOU HAVE ANY SYMPTOMS
+          </FormLabel>
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox name="Fever" />}
+              label="Fever"
+            />
+            <FormControlLabel
+              control={<Checkbox name="SOB" />}
+              label="Shortness of Breath"
+            />
+            <FormControlLabel
+              control={<Checkbox name="BL" />}
+              label="Bluish Lips"
+            />
+          </FormGroup>
+        </FormControl>
+      </div>
+      <div>
+        <button type="submit">Submit</button>
+        <button type="button">Clear Values</button>
+      </div>
+    </form>
+  );
+};
 
-    
-    render() {
-        return (
-            <div className="popup-box">
-            <div className="box">
-            <div className="text-right" style={{ width: " 50rem" }}>
-            <div className="card mb-3">
-              <div className="card-header text-center">Add Screening Data</div>
-                            <div className="card-body">
-                                <form>
-                                    <div class="form-group text-left">
-                                        <label for="currentTemp">Current Temp</label>
-                                        <input type="text" class="form-control" id="currentTemp" onChange={this.handleInputChange} value={this.state.currentTemp} />
-                                    </div>
-                                    <div class="form-group text-left">
-                                        <label for="wakingTemp">Waking Temp</label>
-                                        <input type="text" class="form-control" id="wakingTemp" onChange={this.handleInputChange} value={this.state.wakingTemp} />
-                                    </div>
-                                    <div class="input-group-prepend text-left">
-                                        <label >Temperature Unit
-                                        </label>
-                                        <div>
-                                            <br></br>
-                                            <input type="radio" id="F" name="temp" /> &nbsp;&nbsp;
-                                            <label classname="form-check-label" for="F">F</label> &nbsp;&nbsp;
-                                            <input type="radio" id="C" name="temp" /> &nbsp;&nbsp;
-                                            <label classname="form-check-label" for="C">C</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group text-left">
-                                        <label for="tempMethod">Temperature Method</label>
-                                        <Dropdown  options={this.options} 
-                                        value={this.options[0]} placeholder="Select" />
-                                    </div>
-                                    <div class="form-group text-left">
-                                        <label for="tempMethod">Check If You Have Any Following Symptoms</label>
-                                        <div className="checkbox">
-                                             <input type="checkbox" id="symptom1"  value="Fever" ></input>&nbsp;
-                                             <label for="symptom1">  Fever</label><br></br>
-                                             <input type="checkbox" id="symptom2" value="SOB ( Shortness Of Breath)"></input>&nbsp;
-                                             <label for="symptom2">  SOB ( Shortness Of Breath)</label><br></br>
-                                             <input type="checkbox" id="symptom3" value="Bluish Lips/Face"></input>&nbsp;
-                                             <label for="symptom3">  Bluish Lips/Face</label><br></br>
-                                             <input type="checkbox" id="symptom4" value="Difficulty Breathing"></input>&nbsp;
-                                             <label for="symptom4">  Difficulty Breathing</label><br></br>
-                                             <input type="checkbox" id="symptom5" value="InAbility to wake or Stay Away"></input>&nbsp;
-                                             <label for="symptom5">  InAbility to wake or Stay Away</label><br></br>
-
-                                      </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary ">Submit</button>
-                                </form>
-                            </div>
-                        </div>
-                        </div>
-            </div>
-            </div>
-
-        );
-    }
-
-   const mapStateToProps = state => {
-        return {
-            list: state.list
-        }
-    }
-    
-    const  mapDispatchToProps = dispatch => {
-        return bindActionCreators({
-            insertScreeing: actions.insert,
-            updateScreening: actions.update
-        }, dispatch)
-    }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Screening)
+export default reduxForm({
+    form: 'ScreeningForm' // a unique identifier for this form
+  })(ScreeningForm);
+  

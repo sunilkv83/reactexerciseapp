@@ -2,10 +2,9 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css'
-import Home from './components/pages/Home';
-import Login from './components/pages/Login'
-import MyLocation from './components/pages/MyLocation';
-import ScreeningForm from './components/pages/ScreeningForm';
+import Home from './components/Home';
+import Login from './components/Login'
+import ScreeningList from './components/pages/ScreeningList';
 class App extends Component {
   render() {
       return (
@@ -14,9 +13,7 @@ class App extends Component {
                   <Switch>
                       <Route exact path='/' component={Login} />
                       <Route path='/home' component={Home} />
-                      <Route path='/screening' component={ScreeningForm} />
-                      <Route path='/MyLocation' component={MyLocation} />
-
+                      <Route path='/screening' component={ScreeningList} />
                   </Switch>
               </Router>
           </div>

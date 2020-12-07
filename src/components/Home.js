@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Header from "../controls/Header";
-import Sidebar from "../controls/sidebar";
+import Header from "../components/controls/Header";
+import Sidebar from "../components/controls/sidebar";
 
 export default class Home extends Component {
     render() {
